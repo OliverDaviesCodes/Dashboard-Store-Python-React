@@ -11,7 +11,7 @@ const Header = () => {
       <div className="header-content">
         <Link to="/" className="logo">
           <span className="logo-icon">🛍️</span>
-          <span className="logo-text">Exquisite Store</span>
+          <span className="logo-text">Creative Solutions</span>
         </Link>
 
         <nav className="nav-menu">

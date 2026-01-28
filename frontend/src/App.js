@@ -7,6 +7,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import PaymentSuccess from './pages/PaymentSuccess';
 import Dashboard from './pages/Dashboard';
+import AdminLogin from './pages/AdminLogin';
 import './App.css';
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
           </Routes>
         </div>
       </Router>

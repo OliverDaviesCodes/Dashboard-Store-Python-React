@@ -1,13 +1,26 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8000/api';
-
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: 'http://localhost:8000/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+export const setAuthToken = (token) => {
+  if (token) {
+    api.defaults.headers.common['Authorization'] = `Token ${token}`;
+    localStorage.setItem('adminToken', token);
+  } else {
+    delete api.defaults.headers.common['Authorization'];
+    localStorage.removeItem('adminToken');
+  }
+};
+
+const existingToken = localStorage.getItem('adminToken');
+if (existingToken) {
+  setAuthToken(existingToken);
+}
 
 // Store API
 export const getCategories = () => api.get('/store/categories/');
@@ -23,5 +36,10 @@ export const confirmPayment = (orderId) => api.post(`/store/payment/confirm/${or
 // Dashboard API
 export const getDashboardStats = () => api.get('/dashboard/stats/');
 export const getRecentOrders = () => api.get('/dashboard/recent-orders/');
+
+// Auth API
+export const loginAdmin = (username, password) =>
+  api.post('/auth/login/', { username, password });
+export const logoutAdmin = () => api.post('/auth/logout/');
 
 export default api;

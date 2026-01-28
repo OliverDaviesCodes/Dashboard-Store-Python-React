@@ -13,6 +13,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import './Dashboard.css';
+import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -43,7 +44,9 @@ const Dashboard = () => {
       <div className="dashboard-error">
         <h2>{error}</h2>
         <p>Note: Dashboard is only accessible to admin users.</p>
-        <p>Use admin/admin123 credentials to access the admin panel at /admin</p>
+        <p>
+          <Link to="/admin-login">Go to Admin Login</Link>
+        </p>
       </div>
     );
   }

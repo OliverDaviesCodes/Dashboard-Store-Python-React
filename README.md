@@ -5,7 +5,7 @@ A complex e-commerce store built with Python (Django) and React featuring an exq
 ## Features
 
 ### Store Features
-- 🛍️ **Exquisite Main Page**: Beautiful, responsive design with smooth animations
+- 🛍️ **Main Page**: Beautiful, responsive design with smooth animations
 - 📦 **Product Management**: Browse products by category with detailed views
 - 🛒 **Shopping Cart**: Full cart functionality with quantity management
 - 💳 **Stripe Payment Integration**: Secure payment processing with test mode
@@ -29,8 +29,8 @@ A complex e-commerce store built with Python (Django) and React featuring an exq
 - SQLite Database (can be changed to PostgreSQL)
 
 ### Frontend
-- React 18
-- React Router v6
+- React 19
+- React Router v7
 - Axios for API calls
 - Stripe.js & React Stripe Elements
 - Recharts for data visualization
@@ -38,40 +38,54 @@ A complex e-commerce store built with Python (Django) and React featuring an exq
 ## Installation & Setup
 
 ### Prerequisites
-- Python 3.12 or higher
+- Python 3.12 (recommended)
 - Node.js 18 or higher
-- npm or yarn
+- npm (or yarn)
 
-### Backend Setup
+On Windows, you can install Python 3.12 via winget:
+
+```powershell
+winget install --id Python.Python.3.12 -e --source winget --accept-package-agreements --accept-source-agreements
+```
+
+### Backend Setup (Windows quick start)
 
 1. **Navigate to project directory:**
-```bash
+```powershell
 cd Dashboard-Store-Python-React
 ```
 
-2. **Install Python dependencies:**
-```bash
+2. **Create and use a virtual environment (Python 3.12):**
+```powershell
+py -3.12 -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.\.venv\Scripts\Activate.ps1
+```
+If activation fails or you prefer not to activate, you can still use the venv by prefixing commands with `.-venv\Scripts\python.exe`.
+
+3. **Install Python dependencies:**
+```powershell
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-3. **Run database migrations:**
-```bash
+4. **Run database migrations:**
+```powershell
 python manage.py migrate
 ```
 
-4. **Populate database with sample data:**
-```bash
+5. **Populate database with sample data:**
+```powershell
 python manage.py populate_db
 ```
 
-5. **Create admin superuser:**
-```bash
+6. **Create admin superuser:**
+```powershell
 python manage.py createsuperuser
-# Use: username=admin, email=admin@store.com, password=admin123
 ```
 
-6. **Start Django development server:**
-```bash
+7. **Start Django development server:**
+```powershell
 python manage.py runserver
 ```
 
@@ -96,27 +110,13 @@ npm start
 
 Frontend will be available at: `http://localhost:3000`
 
-## Stripe Test Card Details
+The frontend API base URL is configured in [frontend/src/services/api.js](frontend/src/services/api.js) as `http://localhost:8000/api`.
 
-Use these test cards to test payment functionality:
+## Stripe Testing
 
-### Successful Payment
-- **Card Number**: `4242 4242 4242 4242`
-- **Expiry**: Any future date (e.g., 12/25)
-- **CVC**: Any 3 digits (e.g., 123)
-- **ZIP**: Any 5 digits (e.g., 12345)
+Use test cards from [STRIPE_TEST_CARDS.md](STRIPE_TEST_CARDS.md) to exercise payment flows.
 
-### Requires Authentication (3D Secure)
-- **Card Number**: `4000 0025 0000 3155`
-- **Expiry**: Any future date
-- **CVC**: Any 3 digits
-- **ZIP**: Any 5 digits
-
-### Declined Payment
-- **Card Number**: `4000 0000 0000 9995`
-- **Expiry**: Any future date
-- **CVC**: Any 3 digits
-- **ZIP**: Any 5 digits
+This project creates a Stripe PaymentIntent and later confirms the payment by retrieving the intent server-side. Webhooks are not required for local testing.
 
 ## Admin Dashboard Access
 
@@ -128,7 +128,7 @@ Use these test cards to test payment functionality:
 
 2. **React Dashboard:**
    - URL: `http://localhost:3000/dashboard`
-   - Requires admin authentication
+   - Requires admin authentication (backend enforces `IsAdminUser` on dashboard endpoints)
    - View analytics, charts, and statistics
 
 ## API Endpoints
@@ -199,6 +199,8 @@ The database includes sample products in the following categories:
 - API views in `store/views.py`
 - Admin dashboard views in `dashboard/views.py`
 
+Dashboard endpoints are restricted to admin users (`IsAdminUser`). Ensure you log in with your superuser when accessing dashboard data from the React app.
+
 ### Frontend Development
 - Main pages in `frontend/src/pages/`
 - Reusable components in `frontend/src/components/`
@@ -211,6 +213,13 @@ The database includes sample products in the following categories:
 - Never commit real Stripe secret keys to version control
 - Use environment variables for production deployment
 - The default Django secret key should be changed in production
+
+## Troubleshooting (Windows)
+
+- **pip not found after upgrade**: Use `python -m pip` inside the venv to avoid PATH issues.
+- **Missing Activate.ps1**: Recreate the venv with Python 3.12: `py -3.12 -m venv .venv`. Ensure you run PowerShell with `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` before activation.
+- **Pillow build errors / Django import errors**: If you installed Python 3.14, dependencies may fail. Install Python 3.12 via winget and recreate the venv, then reinstall requirements.
+- **CORS issues**: Backend allows `http://localhost:3000`. Ensure the React app runs on that port or update [backend/settings.py](backend/settings.py) `CORS_ALLOWED_ORIGINS`.
 
 ## Contributing
 
