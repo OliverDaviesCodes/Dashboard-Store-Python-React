@@ -34,6 +34,7 @@ A complex e-commerce store built with Python (Django) and React featuring an exq
 - Axios for API calls
 - Stripe.js & React Stripe Elements
 - Recharts for data visualization
+- Material UI (MUI) for UI components and theming
 
 ## Installation & Setup
 
@@ -103,6 +104,11 @@ cd frontend
 npm install
 ```
 
+If you're integrating or using Material UI, ensure the following packages are installed:
+```bash
+npm install @mui/material @mui/icons-material @emotion/react @emotion/styled
+```
+
 3. **Start React development server:**
 ```bash
 npm start
@@ -111,6 +117,40 @@ npm start
 Frontend will be available at: `http://localhost:3000`
 
 The frontend API base URL is configured in [frontend/src/services/api.js](frontend/src/services/api.js) as `http://localhost:8000/api`.
+
+### Material UI Integration
+
+This project is configured to use MUI for consistent, accessible UI components and theming.
+
+- Global theme and baseline styles are applied in [frontend/src/index.js](frontend/src/index.js) via `ThemeProvider` and `CssBaseline`.
+- The theme is defined in [frontend/src/theme.js](frontend/src/theme.js). Update palette, typography, and component overrides here.
+- The header is implemented with MUI `AppBar` and friends in [frontend/src/components/Header.js](frontend/src/components/Header.js).
+- Pages progressively migrated to MUI:
+   - Home: [frontend/src/pages/Home.js](frontend/src/pages/Home.js) uses `Container`, `Grid`, `Card`, `Chip`, and `Snackbar`.
+   - Cart: [frontend/src/pages/Cart.js](frontend/src/pages/Cart.js) uses `Container`, `Paper`, `Button`, `Snackbar` and improved layout.
+   - Checkout: [frontend/src/pages/Checkout.js](frontend/src/pages/Checkout.js) uses `TextField`, `Grid`, `Paper`; Stripe Elements integration remains unchanged.
+   - Admin Login: [frontend/src/pages/AdminLogin.js](frontend/src/pages/AdminLogin.js) uses `TextField`, `Button`, `Alert`.
+
+Recommended next enhancements:
+- Standardize buttons with theme variants and sizes.
+- Extract a reusable `ProductCard` component under [frontend/src/components](frontend/src/components).
+- Replace remaining `alert()` calls with MUI `Snackbar`.
+- Add `typography` and `components` overrides in [frontend/src/theme.js](frontend/src/theme.js) for brand consistency.
+
+### Design System (UI Guidelines)
+
+Centralize UI styling in the MUI theme so the app stays consistent as more components migrate.
+
+- **Theme source**: [frontend/src/theme.js](frontend/src/theme.js)
+- **Colors** (current defaults):
+   - Primary: `#1976d2`
+   - Secondary: `#9c27b0`
+   - Background default: `#f5f5f5`
+   - Surface (paper): `#ffffff`
+- **Typography**: Keep headings bold and concise. Add a typography scale in the theme as needed.
+- **Spacing**: Use MUI spacing units (`sx={{ p: 2 }}`, `sx={{ my: 2 }}`) instead of custom margins.
+- **Layout**: Prefer `Container`, `Grid`, and `Box` for page structure.
+- **Feedback**: Use `Snackbar` + `Alert` instead of `alert()` for user actions.
 
 ## Stripe Testing
 
@@ -140,6 +180,11 @@ This project creates a Stripe PaymentIntent and later confirms the payment by re
 - `GET /api/store/products/by_category/?category={slug}` - Filter by category
 - `POST /api/store/payment/create/` - Create payment intent
 - `POST /api/store/payment/confirm/{order_id}/` - Confirm payment
+
+Orders returned by the API include nested items and helpful display fields as defined in [store/serializers.py](store/serializers.py):
+- `ProductSerializer` exposes `category_name` for convenience on the frontend.
+- `OrderSerializer` nests `items` via `OrderItemSerializer` and marks `user`, `paid`, and `status` as read-only.
+- `CreateOrderSerializer` validates billing and item payload for payment intent creation.
 
 ### Dashboard API
 - `GET /api/dashboard/stats/` - Get dashboard statistics

@@ -1,36 +1,60 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../utils/CartContext';
-import './Header.css';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Badge from '@mui/material/Badge';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const Header = () => {
   const { getCartCount } = useCart();
+  const cartCount = getCartCount();
 
   return (
-    <header className="header">
-      <div className="header-content">
-        <Link to="/" className="logo">
-          <span className="logo-icon">🛍️</span>
-          <span className="logo-text">Creative Solutions</span>
-        </Link>
+    <AppBar position="static" color="primary">
+      <Toolbar>
+        <Typography
+          variant="h6"
+          component={Link}
+          to="/"
+          style={{
+            textDecoration: 'none',
+            color: 'inherit',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          <span role="img" aria-label="logo">🛍️</span>
+          Creative Solutions
+        </Typography>
 
-        <nav className="nav-menu">
-          <Link to="/" className="nav-link">
-            Home
-          </Link>
-          <Link to="/dashboard" className="nav-link">
-            Dashboard
-          </Link>
-          <Link to="/cart" className="nav-link cart-link">
-            <span className="cart-icon">🛒</span>
-            Cart
-            {getCartCount() > 0 && (
-              <span className="cart-badge">{getCartCount()}</span>
-            )}
-          </Link>
-        </nav>
-      </div>
-    </header>
+        <Box sx={{ flexGrow: 1 }} />
+
+        <Button color="inherit" component={Link} to="/">
+          Home
+        </Button>
+        <Button color="inherit" component={Link} to="/dashboard">
+          Dashboard
+        </Button>
+
+        <IconButton
+          color="inherit"
+          component={Link}
+          to="/cart"
+          aria-label="Cart"
+          sx={{ ml: 1 }}
+        >
+          <Badge badgeContent={cartCount} color="secondary">
+            <ShoppingCartIcon />
+          </Badge>
+        </IconButton>
+      </Toolbar>
+    </AppBar>
   );
 };
 

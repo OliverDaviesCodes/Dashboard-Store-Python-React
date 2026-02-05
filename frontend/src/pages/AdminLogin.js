@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginAdmin, setAuthToken } from '../services/api';
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -27,38 +33,39 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="admin-login" style={{ maxWidth: 400, margin: '40px auto' }}>
-      <h1>Admin Login</h1>
-      <p>Sign in with a superuser account to access the dashboard.</p>
-      {error && (
-        <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>
-      )}
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: 12 }}>
-          <label>Username</label>
-          <input
-            type="text"
+    <Container maxWidth="sm" sx={{ py: 6 }}>
+      <Paper variant="outlined" sx={{ p: 3 }}>
+        <Typography variant="h4" gutterBottom>Admin Login</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          Sign in with a superuser account to access the dashboard.
+        </Typography>
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>
+        )}
+        <form onSubmit={handleSubmit}>
+          <TextField
+            fullWidth
+            label="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             placeholder="admin"
-            style={{ width: '100%', padding: 8 }}
+            margin="normal"
           />
-        </div>
-        <div style={{ marginBottom: 12 }}>
-          <label>Password</label>
-          <input
+          <TextField
+            fullWidth
+            label="Password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            style={{ width: '100%', padding: 8 }}
+            margin="normal"
           />
-        </div>
-        <button type="submit" disabled={loading} style={{ width: '100%', padding: 10 }}>
-          {loading ? 'Signing in…' : 'Sign In'}
-        </button>
-      </form>
-    </div>
+          <Button type="submit" variant="contained" fullWidth disabled={loading} sx={{ mt: 2 }}>
+            {loading ? 'Signing in…' : 'Sign In'}
+          </Button>
+        </form>
+      </Paper>
+    </Container>
   );
 };
 

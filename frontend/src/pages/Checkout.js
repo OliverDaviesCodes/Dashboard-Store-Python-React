@@ -6,6 +6,14 @@ import CheckoutForm from '../components/CheckoutForm';
 import { useCart } from '../utils/CartContext';
 import { createPaymentIntent } from '../services/api';
 import './Checkout.css';
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
 
 // Use test public key
 const stripePromise = loadStripe('pk_test_51QRnzqGm2OGWjUXK0000000000000000000000000000000000000000000');
@@ -61,171 +69,157 @@ const Checkout = () => {
 
   if (cartItems.length === 0) {
     return (
-      <div className="checkout-empty">
-        <h2>Your cart is empty</h2>
-        <button onClick={() => navigate('/')} className="btn-home">
-          Go to Home
-        </button>
-      </div>
+      <Container sx={{ py: 6 }}>
+        <Typography variant="h5" gutterBottom>Your cart is empty</Typography>
+        <Button variant="contained" onClick={() => navigate('/')}>Go to Home</Button>
+      </Container>
     );
   }
 
   return (
-    <div className="checkout-page">
-      <h1>Checkout</h1>
-      <div className="checkout-container">
-        <div className="checkout-form-section">
-          {!clientSecret ? (
-            <form onSubmit={handleSubmit} className="billing-form">
-              <h2>Billing Information</h2>
-              {error && <div className="error-message">{error}</div>}
-              
-              <div className="form-row">
-                <div className="form-group">
-                  <label>First Name *</label>
-                  <input
-                    type="text"
-                    name="first_name"
-                    value={formData.first_name}
-                    onChange={handleInputChange}
-                    required
+    <Container sx={{ py: 6 }}>
+      <Typography variant="h4" gutterBottom>Checkout</Typography>
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={7}>
+          <Paper variant="outlined" sx={{ p: 2 }}>
+            {!clientSecret ? (
+              <form onSubmit={handleSubmit}>
+                <Typography variant="h6" gutterBottom>Billing Information</Typography>
+                {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label="First Name"
+                      name="first_name"
+                      value={formData.first_name}
+                      onChange={handleInputChange}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label="Last Name"
+                      name="last_name"
+                      value={formData.last_name}
+                      onChange={handleInputChange}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Email"
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Phone"
+                      type="tel"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Address"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label="City"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      label="Postal Code"
+                      name="postal_code"
+                      value={formData.postal_code}
+                      onChange={handleInputChange}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      label="Country"
+                      name="country"
+                      value={formData.country}
+                      onChange={handleInputChange}
+                      required
+                      fullWidth
+                    />
+                  </Grid>
+                </Grid>
+                <Button type="submit" variant="contained" disabled={loading} sx={{ mt: 2 }}>
+                  {loading ? 'Processing...' : 'Continue to Payment'}
+                </Button>
+              </form>
+            ) : (
+              <Box>
+                <Typography variant="h6" gutterBottom>Payment Information</Typography>
+                <Box sx={{ mb: 2 }}>
+                  <Typography variant="subtitle1">Test Card Details</Typography>
+                  <Typography variant="body2"><strong>Success:</strong> 4242 4242 4242 4242</Typography>
+                  <Typography variant="body2"><strong>Requires authentication:</strong> 4000 0025 0000 3155</Typography>
+                  <Typography variant="body2"><strong>Declined:</strong> 4000 0000 0000 9995</Typography>
+                  <Typography variant="body2">Use any future expiry date, any 3-digit CVC, and any postal code</Typography>
+                </Box>
+                <Elements stripe={stripePromise} options={{ clientSecret }}>
+                  <CheckoutForm
+                    clientSecret={clientSecret}
+                    orderId={orderId}
+                    totalAmount={getCartTotal()}
                   />
-                </div>
-                <div className="form-group">
-                  <label>Last Name *</label>
-                  <input
-                    type="text"
-                    name="last_name"
-                    value={formData.last_name}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Email *</label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Phone *</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Address *</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>City *</label>
-                  <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Postal Code *</label>
-                  <input
-                    type="text"
-                    name="postal_code"
-                    value={formData.postal_code}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label>Country *</label>
-                <input
-                  type="text"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-
-              <button type="submit" className="btn-continue-payment" disabled={loading}>
-                {loading ? 'Processing...' : 'Continue to Payment'}
-              </button>
-            </form>
-          ) : (
-            <div className="payment-section">
-              <h2>Payment Information</h2>
-              <div className="test-cards-info">
-                <h3>Test Card Details</h3>
-                <p><strong>Success:</strong> 4242 4242 4242 4242</p>
-                <p><strong>Requires authentication:</strong> 4000 0025 0000 3155</p>
-                <p><strong>Declined:</strong> 4000 0000 0000 9995</p>
-                <p>Use any future expiry date, any 3-digit CVC, and any postal code</p>
-              </div>
-              <Elements stripe={stripePromise} options={{ clientSecret }}>
-                <CheckoutForm
-                  clientSecret={clientSecret}
-                  orderId={orderId}
-                  totalAmount={getCartTotal()}
-                />
-              </Elements>
-            </div>
-          )}
-        </div>
-
-        <div className="order-summary-section">
-          <h2>Order Summary</h2>
-          <div className="summary-items">
+                </Elements>
+              </Box>
+            )}
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={5}>
+          <Paper variant="outlined" sx={{ p: 2 }}>
+            <Typography variant="h6" gutterBottom>Order Summary</Typography>
             {cartItems.map((item) => (
-              <div key={item.id} className="summary-item">
-                <span className="item-name">
-                  {item.name} x {item.quantity}
-                </span>
-                <span className="item-price">
-                  ${(parseFloat(item.price) * item.quantity).toFixed(2)}
-                </span>
-              </div>
+              <Box key={item.id} sx={{ display: 'flex', justifyContent: 'space-between', my: 1 }}>
+                <Typography>{item.name} x {item.quantity}</Typography>
+                <Typography>${(parseFloat(item.price) * item.quantity).toFixed(2)}</Typography>
+              </Box>
             ))}
-          </div>
-          <div className="summary-totals">
-            <div className="summary-row">
-              <span>Subtotal:</span>
-              <span>${getCartTotal().toFixed(2)}</span>
-            </div>
-            <div className="summary-row">
-              <span>Shipping:</span>
-              <span>Free</span>
-            </div>
-            <div className="summary-row total">
-              <span>Total:</span>
-              <span>${getCartTotal().toFixed(2)}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', my: 1 }}>
+              <Typography>Subtotal:</Typography>
+              <Typography>${getCartTotal().toFixed(2)}</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', my: 1 }}>
+              <Typography>Shipping:</Typography>
+              <Typography>Free</Typography>
+            </Box>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', my: 1, fontWeight: 700 }}>
+              <Typography fontWeight={700}>Total:</Typography>
+              <Typography fontWeight={700}>${getCartTotal().toFixed(2)}</Typography>
+            </Box>
+          </Paper>
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 
